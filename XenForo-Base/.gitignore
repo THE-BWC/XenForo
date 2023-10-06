@@ -8,7 +8,7 @@ src/**
 
 ### General repo items ###
 !.gitignore
-!readme.md
+!README.md
 
 ### Docker items ###
 !.docker/**
