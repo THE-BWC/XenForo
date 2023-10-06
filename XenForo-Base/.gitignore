@@ -1,0 +1,17 @@
+### Ignore everything ###
+*
+
+### Ignore files other than our addon & config ###
+!src/
+src/**
+!src/config.php
+
+### General repo items ###
+!.gitignore
+!readme.md
+
+### Docker items ###
+!.docker/**
+!.docker/
+!docker-compose.yml
+!xf2-php-fpm.dockerfile

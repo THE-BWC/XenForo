@@ -1,0 +1,69 @@
+version: "3"
+
+services:
+  xenforo:
+    container_name: xenforo
+    image: xenforo:latest-base
+    healthcheck:
+      test: ["CMD", "php-fpm-healthcheck"]
+      interval: 15s
+      timeout: 10s
+      retries: 3
+      start_period: 1m
+    networks:
+      - xenforo
+    restart: always
+    working_dir: /var/www/html
+    volumes:
+      - xenforo-data:/var/www/html
+    environment:
+      DB_PORT: 3306
+      DB_HOST: xenforo-db
+      DB_USER: xenforo
+      DB_PASSWORD: xenforo
+      DB_NAME: xenforo
+  
+  nginx:
+    image: nginx:1.19-alpine
+    container_name: xenforo-nginx
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 15s
+      timeout: 10s
+      retries: 3
+      start_period: 1m
+    networks:
+      - xenforo
+    ports:
+      - 8200:80
+    restart: always
+    volumes:
+      - xenforo-data:/var/www/html
+      - ./.docker/nginx:/etc/nginx/conf.d
+    
+  database:
+    container_name: xenforo-db
+    image: mysql:5.7
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "xenforo", "--password=xenforo"]
+      interval: 15s
+      timeout: 10s
+      retries: 3
+      start_period: 1m
+    networks: 
+      - xenforo
+    restart: always
+    volumes:
+      - xenforo-database:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: xenforo
+      MYSQL_USER: xenforo
+      MYSQL_PASSWORD: xenforo
+      MYSQL_ROOT_PASSWORD: secret
+
+volumes:
+  xenforo-database:
+  xenforo-data:
+
+networks:
+  xenforo:
