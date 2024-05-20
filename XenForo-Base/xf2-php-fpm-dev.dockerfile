@@ -37,6 +37,9 @@ RUN docker-php-ext-install imap; \
     docker-php-ext-install zip; \
     docker-php-ext-install gmp
 
+RUN pecl install xdebug-3.1.6 \
+    && docker-php-ext-enable xdebug
+
 # Use the default production configuration
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
@@ -62,3 +65,4 @@ RUN chmod -R 777 /var/www/html/data /var/www/html/internal_data
 # https://github.com/docker-library/php/issues/926
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg
 RUN docker-php-ext-install -j$(nproc) gd
+ 
